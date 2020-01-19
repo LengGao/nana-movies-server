@@ -3,13 +3,14 @@ var router = express.Router();
 var url = require('url')
 var querystring = require('querystring')
 var util = require('util')
-var pool = require('../dao/baseConeect')
+var pool = require('../dao/BaseDao')
 var bodyParser = require('body-parser')
 // create application/json parser   
 var jsonParser = bodyParser.json()//获取JSON解析器中间件  
 // create application/x-www-form-urlencoded parser   
 var urlencodedParser = bodyParser.urlencoded({ extended: false })//url-encoded解析器  
 var crypto = require('crypto')
+var Service = require('../service/UserService');
 
 //统一设置响应头解决跨域
 // router.all('*', (req, res, next) => {
@@ -92,14 +93,14 @@ router.get('/findMovieList', function (req, rep) {
 /**
  * 电影详情 id = worksId
  */
-router.post('/findWorksDetail', (req, rep) => {
-  let param = req.query
+router.post('/findWorksDetail', urlencodedParser, (req, rep) => {
+  let param = req.body.worksId
   console.log('param', param);
   if (!param) {
     rep.end("id错误")
   }
   let result = {}
-  let sql = `SELECT * FORM tb_works where worksId = ${param}`;
+  let sql = `SELECT * FROM tb_works WHERE worksId = ${param}`;
   pool.getConnection((poolerr, connection) => {
     connection.query(sql, (err, res) => {
       if (err) {
@@ -142,6 +143,7 @@ router.post('/saveUserInfo', urlencodedParser, (req, rep) => {
   }
   let max_sql = `SELECT authorId FROM tb_author ORDER BY authorId DESC LIMIT 0,1`
   let innsert_sql = `INSERT INTO tb_author (authorId, authorName, authorHeader, authorFrom, authorSex, authorStatus, authorAge, authorPhone, authorNickName, authorProvince, authorCity, anthorCountry) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`
+  //是否已经存在账号
   pool.getConnection((poolerr, connection) => {
     connection.query(max_sql, (err, res) => {
       if (err) {

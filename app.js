@@ -8,9 +8,6 @@ var upload = multer()
 
 var logger = require('morgan');
 
-// var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
 var app = express();
 
 // view engine setup
@@ -27,9 +24,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use(upload); // for parsing multipart/form-data
 
 
+// var indexRouter = require('./routes/index');
+var UserRouter = require('./routes/UserRouter');
+var AdvertisementRouter = require('./routes/AdvertisementRouter');
+var PhotoWorksRouter = require('./routes/PhotoWorksRouter')
+var MovieWorksRouter = require('./routes/MovieWorksRouter')
+var LoginRouter = require('./routes/LoginRouter')
 // app.use('/', indexRouter);
-app.use('/', usersRouter);
+app.use('/', UserRouter);
+app.use('/', AdvertisementRouter);
+app.use('/', PhotoWorksRouter);
+app.use('/', MovieWorksRouter);
+app.use('/', LoginRouter);
 
-
-console.log("http://localhost:3000/")
+console.log("http://localhost:80/")
 module.exports = app;
